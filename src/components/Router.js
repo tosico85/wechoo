@@ -5,10 +5,10 @@ import {
   Switch,
   Redirect,
 } from "react-router-dom";
-import Auth from "routes/Auth";
 import Home from "routes/Home";
 import Profile from "routes/Profile";
 import Navigation from "./Navigation";
+import SignIn from "routes/SignIn";
 
 const AppRouter = ({ isLoggedIn, userObj }) => {
   return (
@@ -28,7 +28,7 @@ const AppRouter = ({ isLoggedIn, userObj }) => {
         ) : (
           <>
             <Route exact path="/">
-              <Auth />
+              <SignIn />
             </Route>
             <Redirect from="/*" to="/" />
           </>

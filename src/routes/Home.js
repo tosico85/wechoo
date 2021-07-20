@@ -1,69 +1,104 @@
 import React, { useState, useEffect } from "react";
 import { dbService } from "fbase";
-import Nweet from "./Nweet";
+import Question from "./Question";
 
 const Home = ({ userObj }) => {
-  const [nweet, setNweet] = useState("");
-  const [nweets, setNweets] = useState([]);
+  const [question, setQuestion] = useState("");
+  const [itemA, setItemA] = useState("");
+  const [itemB, setItemB] = useState("");
+  const [questions, setQuestions] = useState([]);
 
-  /* const getNweets = async () => {
-    const docs = await dbService.collection("nweet").get();
+  /* const getquestions = async () => {
+    const docs = await dbService.collection("question").get();
     docs.forEach((doc) => {
       const { id } = doc;
       const docData = doc.data();
-      setNweets((pre) => [{ id, ...docData }, ...pre]);
+      setQuestions((pre) => [{ id, ...docData }, ...pre]);
     });
   }; */
 
   useEffect(() => {
-    dbService.collection("nweet").onSnapshot((snapshot) => {
-      const docs = snapshot.docs
-        .map((doc) => ({
+    dbService
+      .collection("Question")
+      .orderBy("createAt", "desc")
+      .onSnapshot((snapshot) => {
+        const docs = snapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
-        }))
-        .sort((a, b) => b.createAt - a.createAt);
-      console.log(docs);
-      setNweets(docs);
-    });
+          pickCountA: 0,
+          pickCountB: 0,
+        }));
+
+        setQuestions(docs);
+      });
   }, []);
 
   const onChange = (event) => {
     const {
-      target: { value },
+      target: { name, value },
     } = event;
-    setNweet(value);
+
+    if (name === "question") {
+      setQuestion(value);
+    } else if (name === "itemA") {
+      setItemA(value);
+    } else if (name === "itemB") {
+      setItemB(value);
+    }
   };
 
   const onSubmit = async (event) => {
     event.preventDefault();
-    console.log(nweet);
+    console.log(question);
 
-    await dbService.collection("nweet").add({
-      text: nweet,
+    await dbService.collection("Question").add({
+      question,
+      itemA,
+      itemB,
       creator: userObj.uid,
       createAt: Date.now(),
     });
     //console.log(">>>> result : " + JSON.stringify(result));
 
-    setNweet("");
+    setQuestion("");
   };
 
   return (
     <div>
       <form onSubmit={onSubmit}>
+        <span>question</span>
         <input
-          name="nweet"
-          placeholder="What's on your mind?"
-          value={nweet}
+          name="question"
+          placeholder="무엇을 선택하시겠습니까?"
+          value={question}
           onChange={onChange}
           type="text"
         />
-        <input type="submit" value="Nweet" />
+        <div>
+          <input
+            type="text"
+            name="itemA"
+            placeholder="A안"
+            value={itemA}
+            onChange={onChange}
+          />
+          <input
+            type="text"
+            name="itemB"
+            placeholder="B안"
+            value={itemB}
+            onChange={onChange}
+          />
+        </div>
+        <input type="submit" value="question" />
       </form>
       <div>
-        {nweets.map((nweet) => (
-          <Nweet key={nweet.id} nweetObj={nweet} userObj={userObj} />
+        {questions.map((question) => (
+          <Question
+            key={question.id}
+            questionObj={question}
+            userObj={userObj}
+          />
         ))}
       </div>
     </div>
