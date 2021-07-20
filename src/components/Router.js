@@ -8,7 +8,8 @@ import {
 import Home from "routes/Home";
 import Profile from "routes/Profile";
 import Navigation from "./Navigation";
-import SignIn from "routes/SignIn";
+// import SignIn from "routes/SignIn";
+import Auth from "routes/Auth";
 
 const AppRouter = ({ isLoggedIn, userObj }) => {
   return (
@@ -28,7 +29,7 @@ const AppRouter = ({ isLoggedIn, userObj }) => {
         ) : (
           <>
             <Route exact path="/">
-              <SignIn />
+              <Auth />
             </Route>
             <Redirect from="/*" to="/" />
           </>
