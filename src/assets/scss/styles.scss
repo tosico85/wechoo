@@ -1,0 +1,92 @@
+@import "config/_variables.scss";
+@import "config/reset.css";
+
+@import "pages/home.scss";
+@import "pages/auth.scss";
+@import "pages/profile.scss";
+
+@import "partials/header.scss";
+@import "partials/footer.scss";
+
+@import "mixins/question.scss";
+// @import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap");
+//@import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Stylish&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,700;1,300&display=swap");
+
+* {
+  box-sizing: border-box;
+  font-family: "Roboto", sans-serif;
+  color: $black;
+  //font-family: "Stylish", sans-serif;
+}
+
+body {
+  background-color: white;
+  display: flex;
+  justify-content: center;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-top: 60px;
+}
+
+.main {
+  max-width: 1080px;
+}
+
+.div-line {
+  border-top: 1px solid $grey;
+  height: 1px;
+  width: 100%;
+  margin: 10px 0px;
+}
+
+#root {
+  width: 100%;
+}
+
+%button-parent {
+  border: none;
+  border-radius: 10px;
+  padding: 10px;
+  width: 100%;
+  font-weight: 400;
+  font-size: 1.1em;
+}
+
+%button-small {
+  border: none;
+  border-radius: 10px;
+  padding: 5px 10px;
+}
+
+%input-parent {
+  border: 1px solid $dark-grey;
+  border-radius: 5px;
+  padding: 10px;
+  font-size: 1em;
+}
+
+%input-small {
+  border: 1px solid $dark-grey;
+  border-radius: 5px;
+  padding: 5px 10px;
+  font-size: 0.8em;
+}
+
+%input-parent-hover {
+  border: 1px solid $black;
+}
+
+%input-parent-focus {
+  outline: 0;
+  border: 2px solid $silver;
+}
+
+%input-small-hover {
+  border: 1px solid $black;
+}

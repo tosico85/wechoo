@@ -1,40 +1,32 @@
 import React, { useState, useEffect } from "react";
-import { dbService } from "fbase";
+import { dbService, storageService } from "fbase";
+import QuestionForm from "./QuestionForm";
 
 const Question = ({ questionObj, userObj }) => {
   const isOwner = questionObj.creator === userObj.uid;
   const [isEditing, setIsEditing] = useState(false);
-  const [newQuestion, setNewQuestion] = useState("");
-  const [newItemA, setNewItemA] = useState("");
-  const [newItemB, setNewItemB] = useState("");
   const [pickCount, setPickCount] = useState({});
   const [answerList, setAnswerList] = useState([]);
 
   const onDelete = async () => {
     const ok = window.confirm("삭제하시겠습니까?");
-    ok && (await dbService.collection("Question").doc(questionObj.id).delete());
-  };
-
-  const changeQuestion = (e) => {
-    const {
-      target: { name, value },
-    } = e;
-
-    if (name === "newQuestion") {
-      setNewQuestion(value);
-    } else if (name === "newItemA") {
-      setNewItemA(value);
-    } else if (name === "newItemB") {
-      setNewItemB(value);
+    if (ok) {
+      await dbService.collection("Question").doc(questionObj.id).delete();
+      await clearImages();
     }
   };
 
+  const clearImages = async () => {
+    if (questionObj.imageUrlA) {
+      await storageService.refFromURL(questionObj.imageUrlA).delete();
+    }
+    if (questionObj.imageUrlB) {
+      await storageService.refFromURL(questionObj.imageUrlB).delete();
+    }
+  };
+
+  //
   const toggleEdit = () => {
-    if (!isEditing) {
-      setNewQuestion(questionObj.question);
-      setNewItemA(questionObj.itemA);
-      setNewItemB(questionObj.itemB);
-    }
     setIsEditing((prev) => !prev);
   };
 
@@ -55,17 +47,7 @@ const Question = ({ questionObj, userObj }) => {
           pickCountB: result.filter((answer) => answer.pickCode === "B").length,
         });
       });
-  }, []);
-
-  const onSubmit = async (e) => {
-    e.preventDefault();
-    await dbService.collection("Question").doc(questionObj.id).update({
-      question: newQuestion,
-      itemA: newItemA,
-      itemB: newItemB,
-    });
-    toggleEdit();
-  };
+  }, [questionObj.id]);
 
   const onPick = async (pickCode) => {
     if (answerList.find(({ uid }) => uid === userObj.uid)) {
@@ -85,51 +67,44 @@ const Question = ({ questionObj, userObj }) => {
     <>
       {isEditing ? (
         <>
-          <form onSubmit={onSubmit}>
-            <input
-              name="newQuestion"
-              onChange={changeQuestion}
-              value={newQuestion}
-              type="text"
-            />
-            <div>
-              <input
-                name="newItemA"
-                onChange={changeQuestion}
-                value={newItemA}
-                type="text"
-              />
-              <input
-                name="newItemB"
-                onChange={changeQuestion}
-                value={newItemB}
-                type="text"
-              />
-            </div>
-            <input type="submit" value="Edit" />
-            <button onClick={toggleEdit}>Cancel</button>
-          </form>
+          <div className="div-line"></div>
+          <QuestionForm
+            userObj={userObj}
+            questionObj={questionObj}
+            toggleEdit={toggleEdit}
+          />
         </>
       ) : (
-        <div>
-          <h4>{questionObj.question}</h4>
-          <div>
-            <div>
-              <span>{pickCount.pickCountA}</span>
-              <button onClick={() => onPick("A")}>{questionObj.itemA}</button>
+        <div className="question-card">
+          <span className="question__title">{questionObj.question}</span>
+          <div className="question__items">
+            <div onClick={() => onPick("A")} className="quest-item">
+              <img
+                className="item-image"
+                src={questionObj.imageUrlA}
+                alt="A안 이미지"
+              />
+              <span className="item-count">{pickCount.pickCountA}</span>
+              <span className="item-desc">{questionObj.itemA}</span>
             </div>
-            <span> VS </span>
-            <div>
-              <span>{pickCount.pickCountB}</span>
-              <button onClick={() => onPick("B")}>{questionObj.itemB}</button>
+            <div onClick={() => onPick("B")} className="quest-item">
+              <img
+                className="item-image"
+                src={questionObj.imageUrlB}
+                alt="B안 이미지"
+              />
+              <span className="item-count">{pickCount.pickCountB}</span>
+              <span className="item-desc">{questionObj.itemB}</span>
             </div>
           </div>
-          {isOwner && (
-            <div className="edit-buttons">
-              <button onClick={onDelete}>Delete Question</button>
-              <button onClick={toggleEdit}>Edit Question</button>
-            </div>
-          )}
+          <div className="question-edit">
+            {isOwner && (
+              <div className="edit-buttons">
+                <button onClick={onDelete}>삭제</button>
+                <button onClick={toggleEdit}>수정</button>
+              </div>
+            )}
+          </div>
         </div>
       )}
     </>

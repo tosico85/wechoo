@@ -1,21 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { dbService } from "fbase";
 import Question from "./Question";
+import QuestionForm from "./QuestionForm";
 
 const Home = ({ userObj }) => {
-  const [question, setQuestion] = useState("");
-  const [itemA, setItemA] = useState("");
-  const [itemB, setItemB] = useState("");
+  const [isReg, setIsReg] = useState(false);
   const [questions, setQuestions] = useState([]);
-
-  /* const getquestions = async () => {
-    const docs = await dbService.collection("question").get();
-    docs.forEach((doc) => {
-      const { id } = doc;
-      const docData = doc.data();
-      setQuestions((pre) => [{ id, ...docData }, ...pre]);
-    });
-  }; */
 
   useEffect(() => {
     dbService
@@ -33,75 +23,32 @@ const Home = ({ userObj }) => {
       });
   }, []);
 
-  const onChange = (event) => {
-    const {
-      target: { name, value },
-    } = event;
-
-    if (name === "question") {
-      setQuestion(value);
-    } else if (name === "itemA") {
-      setItemA(value);
-    } else if (name === "itemB") {
-      setItemB(value);
-    }
-  };
-
-  const onSubmit = async (event) => {
-    event.preventDefault();
-    console.log(question);
-
-    await dbService.collection("Question").add({
-      question,
-      itemA,
-      itemB,
-      creator: userObj.uid,
-      createAt: Date.now(),
-    });
-    //console.log(">>>> result : " + JSON.stringify(result));
-
-    setQuestion("");
+  const toggleNew = () => {
+    setIsReg((prev) => !prev);
   };
 
   return (
-    <div>
-      <form onSubmit={onSubmit}>
-        <span>question</span>
-        <input
-          name="question"
-          placeholder="무엇을 선택하시겠습니까?"
-          value={question}
-          onChange={onChange}
-          type="text"
-        />
-        <div>
-          <input
-            type="text"
-            name="itemA"
-            placeholder="A안"
-            value={itemA}
-            onChange={onChange}
-          />
-          <input
-            type="text"
-            name="itemB"
-            placeholder="B안"
-            value={itemB}
-            onChange={onChange}
-          />
+    <>
+      {!isReg && (
+        <div className="sub-header">
+          <button className="reg-button__question" onClick={toggleNew}>
+            Add
+          </button>
         </div>
-        <input type="submit" value="question" />
-      </form>
-      <div>
-        {questions.map((question) => (
-          <Question
-            key={question.id}
-            questionObj={question}
-            userObj={userObj}
-          />
-        ))}
+      )}
+      <div className="home-main main">
+        {isReg && <QuestionForm userObj={userObj} toggleEdit={toggleNew} />}
+        <div>
+          {questions.map((question) => (
+            <Question
+              key={question.id}
+              questionObj={question}
+              userObj={userObj}
+            />
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

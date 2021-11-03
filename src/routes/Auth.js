@@ -1,5 +1,9 @@
 import React, { useState } from "react";
 import { authService, authInstance } from "fbase";
+import { faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+// import "assets/scss/pages/auth.scss";
 
 const Auth = () => {
   const [email, setEmail] = useState("");
@@ -60,14 +64,16 @@ const Auth = () => {
   const toggleAccount = () => setNewAccount(!newAccount);
 
   return (
-    <div>
-      <form onSubmit={onSubmit}>
+    <div className="auth-main main">
+      <h1 className="login-title">Login</h1>
+      <form className="signin-form" onSubmit={onSubmit}>
         <input
           type="text"
           name="email"
           value={email}
           onChange={onChange}
-          placeholder="Email"
+          placeholder="Email Address *"
+          className="signin-form__email"
           required
         />
         <input
@@ -75,26 +81,38 @@ const Auth = () => {
           name="password"
           value={password}
           onChange={onChange}
-          placeholder="Password"
+          placeholder="Password *"
+          className="signin-form__password"
           required
         />
         <input
           type="submit"
-          value={newAccount ? "Create Account" : "Sign In"}
+          value={newAccount ? "회원가입" : "로그인"}
+          className="signin-form__submit"
         />
         <div>{error}</div>
       </form>
-      <span onClick={toggleAccount}>
-        {newAccount ? "Sign In" : "Create Account"}
-      </span>
-      <div>
-        <button name="google" onClick={goSocialAuth}>
+      <div className="social-login">
+        <button
+          className="social-login__google"
+          name="google"
+          onClick={goSocialAuth}
+        >
+          <FontAwesomeIcon icon={faGoogle} className="faGoogle" />
           Continue with Google
         </button>
-        <button name="github" onClick={goSocialAuth}>
+        <button
+          className="social-login__github"
+          name="github"
+          onClick={goSocialAuth}
+        >
+          <FontAwesomeIcon icon={faGithub} />
           Continue with Github
         </button>
       </div>
+      <span className="toggle-account" onClick={toggleAccount}>
+        {newAccount ? "로그인" : "회원가입"}
+      </span>
     </div>
   );
 };

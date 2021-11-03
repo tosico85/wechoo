@@ -1,0 +1,95 @@
+.main.auth-main {
+  padding: 0px 30px;
+
+  button {
+    @extend %button-parent;
+  }
+
+  input {
+    @extend %input-parent;
+
+    &:hover {
+      @extend %input-parent-hover;
+    }
+    &:focus {
+      @extend %input-parent-focus;
+    }
+  }
+
+  * {
+    font-family: "Stylish", sans-serif;
+  }
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  padding: 0px 30px 50px 30px;
+  max-width: 450px;
+
+  .login-title {
+    margin-bottom: 40px;
+    font-weight: 700;
+    font-size: 2em;
+    font-style: italic;
+    color: $black;
+  }
+
+  .signin-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+
+    .signin-form__email,
+    .signin-form__password {
+      @extend %input-parent;
+      margin-bottom: 10px;
+      width: 100%;
+    }
+
+    .signin-form__submit {
+      @extend %button-parent;
+      font-size: 1.2em;
+      width: 100%;
+      background-color: $dark-grey;
+      color: white;
+      margin-top: 10px;
+    }
+  }
+
+  .social-login {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+    width: 100%;
+
+    button {
+      color: white;
+      margin: 5px 0px;
+
+      .faGoogle {
+        color: white;
+      }
+    }
+    .social-login__google {
+      background-color: $dark-grey;
+    }
+    .social-login__github {
+      background-color: $dark-grey;
+    }
+  }
+
+  .toggle-account {
+    display: inline-block;
+    width: 100%;
+    margin: 10px;
+    color: $dark-grey;
+    text-align: right;
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}
